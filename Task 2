@@ -1,0 +1,81 @@
+#include <iostream>
+
+using namespace std;
+
+int numEuclid (int n); //returns number of mod divisions made on input of size n for Euclid's algorithm
+int Euclid (int m, int n); //returns number of mod divisions made on input m and n for Euclid's algorithm
+int Fibonacci (int n); // returns the nth fibonacci number
+
+int main()
+{
+    for (int i = 1; i < 20; i++)
+    {
+        cout << Fibonacci(i+1) << ',' << numEuclid(i) << endl;
+        /*cout << "m = " << Fibonacci(i+1) << '|';
+        cout << numEuclid(i) << endl;*/
+    }
+    //cout << numEuclid(46);
+    return 0;
+}
+
+int numEuclid (int x)
+{
+    int m = Fibonacci(x + 1);
+    int n = Fibonacci(x);
+    int num = 0;
+    
+    num = Euclid(m, n);
+    
+    return num;
+}
+
+int Euclid (int m, int n)
+{
+    //base case, no mod divisions made
+    if (n == 0)
+        return 0;
+        
+    int temp = n;
+    
+    //Euclid's algorithm
+    //gcd(m, n) -> gcd(n, m mod n)
+    n = m % n;
+    m = temp;
+    
+    //recursive statement, +1 for mod division made above
+    return 1 + Euclid(m ,n);
+}
+
+int Fibonacci (int n)
+{
+    //base case, first two numbers of sequence is 1
+    if (n == 1)
+        return 1;
+    if (n == 2)
+        return 1;
+    int fNum = 0;
+    
+    //the number one behind the fibonacci number we want to find
+    int a = 1;
+    //the number two behind the fibonacci number we want to find
+    int b = 1;
+    
+    //to calculate nth fibonacci number we need to keep track of the 
+    //n-1 and n-2 fibonacci number
+    //in each iteration the n-2 fibonacci number will become the n-1 fibonacci number
+    //and the n-1 fibonacci number will become n-2 number + n-1 number
+    //once we reach the last iteration we can add the previous two fibonacci numbers
+    //to get the nth fibonacci number
+    for (int i = 2; i < n; i++)
+    {
+        if (i == n-1)
+            fNum = a + b;
+            
+        int temp = a;
+        a = a + b;
+        b = temp;
+    }
+    
+    return fNum;
+}
+
