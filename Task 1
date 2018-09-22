@@ -1,0 +1,94 @@
+#include <iostream>
+
+using namespace std;
+
+float avgEuclid (int n); //returns average number of mod divisions made on input of size n for Euclid's algorithm
+int Euclid (int m, int n); //returns number of mod divisions made on input m and n for Euclid's algorithm
+float avgConsec (int n); //returns average number of mod divisions made on input of size n for Consecutive integer checking algorithm
+int Consec (int m, int n); //returns number of mod divisions made on input m and n for Consecutive integer checking algorithm
+
+int main()
+{
+    float avgE = avgEuclid(5);
+    cout << avgE << endl;
+    
+    float avgC = avgConseq(5);
+    cout << avgC;
+
+    return 0;
+}
+
+float avgEuclid (int x)
+{
+    int m = x;
+    int n = 1;
+    float avgE = 0;
+    
+    //loop to count mod divisions for gcd(n, 1), gcd(n, 2), ..., gcd(n,n)
+    while (m >= n)
+    {
+        avgE += Euclid(m, n);
+        n++;
+    }
+    
+    //calculate average by dividing total amount by size of input
+    return avgE / x;
+}
+
+int Euclid (int m, int n)
+{
+    //base case, no mod divisions made
+    if (n == 0)
+        return 0;
+        
+    int temp = n;
+    
+    //Euclid's algorithm
+    //gcd(m, n) -> gcd(n, m mod n)
+    n = m % n;
+    m = temp;
+    
+    //recursive statement, +1 for mod division made above
+    return 1 + Euclid(m ,n);
+}
+
+float avgConsec (int x)
+{
+    int m = x;
+    int n = 1;
+    float avgC = 0;
+    
+    while (m >= n)
+    {
+        avgC += Consec(m, n);
+        n++;
+    }
+
+    return avgC / x;
+}
+
+int Consec (int m, int n)
+{
+    //base case, if m or n is zero, two mod divisions will be made to find the solution
+    if (n == 1 || m == 1)
+        return 2;
+        
+    int temp = min(m, n);
+    int maximum = max(m, n);
+    
+    //variable to hold the number of mod divisions made
+    int x = 0;
+    
+    //at least one mod division will be made per iteration
+    x++;
+    if (m % temp == 0)
+    {
+        //if the first mod division returns a zero another mod division will be made
+        x++;
+        //solution found, so return the number of mod divisions made
+        if (n % temp == 0)
+            return x;
+    }
+    //recursive statement where we are going to decrement min(m, n)
+    return x + Consec(maximum, --temp);
+}
