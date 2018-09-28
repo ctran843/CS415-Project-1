@@ -1,3 +1,11 @@
+/*
+Authors: Chris Tran, Josh Hernandez
+Description: This program will run the sieve of Eratosthenes algorithm on various inputs
+and show the primes that make them up and the number of divisions required to compute it.
+It will also run an algoirthm to find the common elements in two sorted arrays and show
+how many comparisons were required to compute it.
+*/
+
 #include <stdio.h> 
 #include <math.h> 
 #include <iostream> 
@@ -15,14 +23,13 @@ int numComp;
 void primeFactors(int n, vector<int> &a); // sieve of Eratosthenes
 vector<int> commonElem(vector<int> A, vector<int> B); // find common elements in two sorted vectors
 
-// A function to print all prime factors of a given number n 
+// A function to push all prime factors of a given number n to a vector
 void primeFactors(int n, vector<int> &a)
 { 
-    // Print the number of 2s that divide n 
+    // Push the number of 2s that divide n 
     while (n%2 == 0)
     { 
         a.push_back(2);
-        //printf("%d ", 2); 
         n = n/2;
         numDivE += 2;
     } 
@@ -31,11 +38,10 @@ void primeFactors(int n, vector<int> &a)
     // one element (Note i = i +2) 
     for (int i = 3; i <= sqrt(n); i = i+2) 
     { 
-        // While i divides n, print i and divide n 
+        // While i divides n, push i and divide n 
         while (n%i == 0) 
         { 
             a.push_back(i);
-            //printf("%d ", i); 
             n = n/i; 
             numDivE += 2;
         } 
@@ -45,37 +51,43 @@ void primeFactors(int n, vector<int> &a)
     // is a prime number greater than 2 
     if (n > 2) 
         a.push_back(n);
-        //printf ("%d ", n); 
         
 } 
 
 vector<int> commonElem(vector<int> A, vector<int> B)
-{
+{ 
+    // Initialize vector to hold common elements and two iterators
     vector<int> common;
     int a = 0;
     int b = 0;
     
     while(a < A.size() && b < B.size())
     {
+        // If the element in A is less than element in B increment a iterator
         if (A[a] < B[b])
         {
             a++;
-            numComp += 3;
+            // One comparison made above
+            numComp += 1;
         }
+        // Else if the element in A is greater than element in B increment b iterator
         else if (A[a] > B[b])
         {
             b++;
-            numComp += 4;
+            // One comparison made for first if-statement, one more for else-if-statement
+            numComp += 2;
         }
+        // Else the two elements are the same, push to common vector
         else
         {
             common.push_back(A[a]);
             a++;
             b++;
-            numComp += 4;
+            // Two comparisons made in if and else-if statement
+            numComp += 2;
         }
     }
-    
+
     return common;
 }
   
@@ -83,78 +95,104 @@ vector<int> commonElem(vector<int> A, vector<int> B)
 int main() 
 { 
     vector<int> primes;
-    
     vector<int> common;
     vector<int> a;
     vector<int> b;
     clock_t t;
-    
-
-    // sieve of Eratosthenes
-    /*int n; 
-    cout<<"Enter a Number"<<endl;
-    //cin >> n;
-    for (int i = 1; i < 64; i++)
+    while(true)
     {
-        n = i;
-        primes.clear();
-        numDivE = 0;
+        cout << "Enter 1 for sieve of Eratosthenes algorithm" << endl;
+        cout << "Enter 2 for common elements in two sorted arrays algorthm" << endl;
+        cout << "Enter 0 to exit" << endl;
         
-        if (n == 0)
-            cout<<"enter a number greater than 0"<<endl;
-        else
-        {
-            t = clock();
-            primeFactors(n, primes); 
-            t = clock() - t;
+        int input;
+        cin >> input;
+        cout << endl;
+        
+        if (input == 0)
+            exit(0);
             
-            cout << "Primes of: " << i << endl;
-            for (int i = 0; i < primes.size(); i++)
-            cout << primes[i] << ' ';
+        
+        // sieve of Eratosthenes
+        else if (input == 1)
+        {
+            int n; 
+        
+            for (int i = 2; i < 128; i++)
+            {
+                n = i;
+                primes.clear();
+                numDivE = 0;
+                
+                t = clock();
+                primeFactors(n, primes); 
+                t = clock() - t;
+                    
+                cout << "Primes of: " << i << endl;
+                for (int i = 0; i < primes.size(); i++)
+                cout << primes[i] << ' ';
+                //cout << i << ',' << fixed << setprecision(10) << (float(t))/CLOCKS_PER_SEC << endl;
+                cout << primes.size() << endl;
+                cout << "Time to run sieve of Eratosthenes:  " << fixed << setprecision(10) << (float(t))/CLOCKS_PER_SEC << endl;
+                cout << "Number of divisions made by sieve of Eratosthenes: " << numDivE << endl; 
+                cout << endl;
+            }
+        }
+        
+        
+        //common elements
+        else if (input == 2)
+        {
+            int size = 0;
+            numComp = 0;
+            common.clear();
+            a.clear();
+            b.clear();
+            
+            cout << "Enter a size for the two lists (greater than 1): ";
+            cin >> size;
             cout << endl;
-            //cout << primes.size() << endl;
-            cout << "Time to run sieve of Eratosthenes:  " << fixed << setprecision(10) << (float(t))/CLOCKS_PER_SEC << endl;
-            cout << "Number of divisions made by sieve of Eratosthenes: " << numDivE << endl; 
+            
+            while(size <= 1)
+            {
+                cout << "error: number not greater than 1" << endl;
+                cout << "Enter a size for the two lists (greater than 1): ";
+                cin >> size;
+                cout << endl;
+            }
+        
+            // Generate random numbers to populate the two vectors
+            srand(time(NULL));
+            
+            for (int i = 0; i < size; i++)
+                a.push_back(rand() % ((size / 2) + (size / 3)));
+            
+            for (int i = 0; i < size; i++)
+                b.push_back(rand() % ((size / 2) + (size / 3)));
+                
+            sort(a.begin(), a.end());
+            sort(b.begin(), b.end());
+            
+            
+            cout << "List A:" << endl;
+            for (int i = 0; i < a.size(); i++)
+                cout << a[i] << ' ';
+            cout << endl;
+            
+            cout << "List B:" << endl;
+            for (int i = 0; i < b.size(); i++)
+                cout << b[i] << ' ';
+            cout << endl;
+            
+            cout << "Common Elements: " << endl;
+            common = commonElem(a, b);
+            for (int i = 0; i < common.size(); i++)
+                cout << common[i] << ' ';
+            cout << endl;
+            cout << "Number of comparisons: " << numComp << endl;
             cout << endl;
         }
-    }*/
-    
-
-
-    // common elements
-    
-        int size = 50;
-    srand(time(NULL));
-    
-    for (int i = 0; i < size; i++)
-        a.push_back(rand() % 24 + 1);
-    
-    for (int i = 0; i < size; i++)
-        b.push_back(rand() % 24 + 1);
-        
-    sort(a.begin(), a.end());
-    sort(b.begin(), b.end());
-    
-    
-    cout << "List A:" << endl;
-    for (int i = 0; i < a.size(); i++)
-        cout << a[i] << ' ';
-    cout << endl;
-    
-    cout << "List B:" << endl;
-    for (int i = 0; i < b.size(); i++)
-        cout << b[i] << ' ';
-    cout << endl;
-    
-    cout << "Common Elements: " << endl;
-    common = commonElem(a, b);
-    for (int i = 0; i < common.size(); i++)
-        cout << common[i] << ' ';
-    cout << endl;
-    cout << "Number of comparisons: " << numComp << endl;
-    cout << endl;
-    
-    
-    return 0; 
+    }
 } 
+
 
