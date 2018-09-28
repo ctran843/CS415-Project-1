@@ -1,6 +1,11 @@
 #include <iostream>
+#include <iomanip>
+#include <time.h>
+#include <stdlib.h>
 
 using namespace std;
+
+clock_t t;
 
 int numEuclid (int n); //returns number of mod divisions made on input of size n for Euclid's algorithm
 int Euclid (int m, int n); //returns number of mod divisions made on input m and n for Euclid's algorithm
@@ -8,13 +13,15 @@ int Fibonacci (int n); // returns the nth fibonacci number
 
 int main()
 {
-    for (int i = 1; i < 20; i++)
+    for (int i = 1; i < 15; i++)
     {
         cout << Fibonacci(i+1) << ',' << numEuclid(i) << endl;
-        /*cout << "m = " << Fibonacci(i+1) << '|';
-        cout << numEuclid(i) << endl;*/
+        //cout << "m = " << Fibonacci(i+1) << '|';
+        //cout << numEuclid(i) << endl;
     }
-    //cout << numEuclid(46);
+    
+    numEuclid(40);
+    
     return 0;
 }
 
@@ -24,8 +31,12 @@ int numEuclid (int x)
     int n = Fibonacci(x);
     int num = 0;
     
+    t = clock();
     num = Euclid(m, n);
+    t = clock() - t;
     
+    cout << "Time to run Euclid's algorithm (worst-case):  " << fixed << setprecision(10) << (float(t))/CLOCKS_PER_SEC << endl;
+
     return num;
 }
 
@@ -78,4 +89,7 @@ int Fibonacci (int n)
     
     return fNum;
 }
+
+
+
 
