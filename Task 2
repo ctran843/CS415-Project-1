@@ -1,3 +1,10 @@
+/*
+Authors: Chris Tran, Josh Hernandez
+Description: This program will calculate the worst-case number of modular divisions
+made by Euclid's algorithm on numbers from the Fibonacci sequence up to the 46th number of
+the Fibonacci sequence.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <time.h>
@@ -5,39 +12,31 @@
 
 using namespace std;
 
-clock_t t;
-
-int numEuclid (int n); //returns number of mod divisions made on input of size n for Euclid's algorithm
 int Euclid (int m, int n); //returns number of mod divisions made on input m and n for Euclid's algorithm
-int Fibonacci (int n); // returns the nth fibonacci number
+int Fibonacci (int n); // returns the nth fibonacci number (up to the 46th)
 
 int main()
 {
-    for (int i = 1; i < 15; i++)
+    clock_t t;
+    
+    cout << "ith Fibonacci number | " << setw(20) << "m = (ith + 1) Fibonacci number | " << setw(18) << "euclid's algorithm | " << setw(20) << "euclid's algorithm time taken" << endl;
+
+    for (int i = 1; i < 46; i++)
     {
-        cout << Fibonacci(i+1) << ',' << numEuclid(i) << endl;
-        //cout << "m = " << Fibonacci(i+1) << '|';
-        //cout << numEuclid(i) << endl;
+        int m = Fibonacci(i + 1);
+        int n = Fibonacci(i);
+        int num = 0;
+        
+        t = clock();
+        num = Euclid(m, n);
+        t = clock() - t;
+    
+        cout << i << setw(23) << i+1 << setw(33) << num << setw(42) << fixed << setprecision(20) << (float(t))/CLOCKS_PER_SEC << endl;
+        
+        //cout << i << << i+1 << ',' << num << endl;
     }
     
-    numEuclid(40);
-    
     return 0;
-}
-
-int numEuclid (int x)
-{
-    int m = Fibonacci(x + 1);
-    int n = Fibonacci(x);
-    int num = 0;
-    
-    t = clock();
-    num = Euclid(m, n);
-    t = clock() - t;
-    
-    cout << "Time to run Euclid's algorithm (worst-case):  " << fixed << setprecision(10) << (float(t))/CLOCKS_PER_SEC << endl;
-
-    return num;
 }
 
 int Euclid (int m, int n)
