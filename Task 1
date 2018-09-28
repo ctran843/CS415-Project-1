@@ -1,3 +1,9 @@
+/*
+Authors: Chris Tran, Josh Hernandez
+Description: This program will calculate the average-case number of divisions/modular divisions
+made by Euclid's algorithm and consecutive integer checking algorithm on various inputs of size n.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <time.h>
@@ -14,22 +20,21 @@ int Consec (int m, int n); //returns number of mod divisions made on input m and
 
 int main()
 {
-    for (int i = 1; i < 10; i++)
+    cout << "n |" << setw(21) << "euclid's algorithm |" << setw(39) << "consecutive integer checking algorithm | " << setw(20) << "euclid's algorithm time taken" << endl;
+    
+    for (int i = 1; i < 301; i++)
     {
         float avgE = avgEuclid(i);
-        cout << fixed << setprecision(3) << i << ',' << avgE << endl;
-        //float avgC = avgConsec(i);
-        //cout << i << ',' << avgC << endl;
-        //cout << "n = " << i << '|';
-        //cout << avgE << endl;
+        float avgC = avgConsec(i);
+        cout << fixed << setprecision(2) << i << setw(7) << avgE << setw(21) << avgC << setw(58) << fixed << setprecision(20) << (float(t))/CLOCKS_PER_SEC << endl;
+        
+        /*float avgE = avgEuclid(i);
+        float avgC = avgConsec(i);
+        cout << i << ',' << avgE << endl;*/
     }
-    
-    //float avgE = avgEuclid(5);
-    //cout << avgE << endl;
-    //float avgC = avgConsec(500);
-    //cout << avgC;
 
     return 0;
+
 }
 
 float avgEuclid (int x)
@@ -50,7 +55,7 @@ float avgEuclid (int x)
     
     //t = (clock() - t) / x;
     t = clock() - t;
-    cout << "Time to run Euclid's algorithm (average-case):  " << fixed << setprecision(20) << (float(t))/CLOCKS_PER_SEC << endl;
+    //cout << "Time to run Euclid's algorithm (average-case):  " << fixed << setprecision(20) << (float(t))/CLOCKS_PER_SEC << endl;
     
     //calculate average by dividing total amount by size of input
     return avgE / x;
@@ -94,7 +99,7 @@ int Consec (int m, int n)
     if (n == 1 || m == 1)
         return 2;
         
-    int temp = min(m, n);
+    int minimum = min(m, n);
     int maximum = max(m, n);
     
     //variable to hold the number of mod divisions made
@@ -102,16 +107,16 @@ int Consec (int m, int n)
     
     //at least one mod division will be made per iteration
     x++;
-    if (m % temp == 0)
+    if (m % minimum == 0)
     {
         //if the first mod division returns a zero another mod division will be made
         x++;
         //solution found, so return the number of mod divisions made
-        if (n % temp == 0)
+        if (n % minimum == 0)
             return x;
     }
     //recursive statement where we are going to decrement min(m, n)
-    return x + Consec(maximum, --temp);
+    return x + Consec(maximum, --minimum);
 }
 
 
